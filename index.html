@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGLV — Sistema Integrado de Gestão e Liberação de Veículos</title>
+<meta name="description" content="Sistema Integrado de Gestão e Liberação de Veículos">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #f3f5f8;
+  color: #172033;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 245px;
+  background: #121926;
+  color: white;
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  min-height: 78px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #263041;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand strong {
+  display: block;
+  font-size: 19px;
+}
+
+.brand small {
+  color: #99a6ba;
+}
+
+.close-menu {
+  display: none;
+}
+
+.sidebar nav {
+  padding: 18px 12px;
+  flex: 1;
+}
+
+.sidebar nav button {
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  background: transparent;
+  color: #b7c1d0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+
+.sidebar nav button:hover,
+.sidebar nav button.active {
+  background: #263246;
+  color: white;
+}
+
+.sidebar nav button.active {
+  border-left: 3px solid #3b82f6;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #263041;
+  color: #9aa7ba;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main {
+  width: calc(100% - 245px);
+  margin-left: 245px;
+}
+
+.topbar {
+  height: 78px;
+  padding: 0 28px;
+  background: white;
+  border-bottom: 1px solid #e4e8ef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.topbar p {
+  margin: 4px 0 0;
+  color: #7a8496;
+  font-size: 13px;
+}
+
+.demo-badge {
+  padding: 9px 13px;
+  background: #eef4ff;
+  color: #315fb7;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.content {
+  padding: 28px;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-heading h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+.page-heading p {
+  margin: 6px 0 0;
+  color: #737e90;
+}
+
+.primary,
+.secondary {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.primary:hover {
+  background: #1e55c9;
+}
+
+.secondary {
+  background: #eef1f5;
+  color: #374151;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.metric {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #e4e8ee;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.metric.danger {
+  border-color: #fecaca;
+}
+
+.metric-icon {
+  width: 41px;
+  height: 41px;
+  background: #eef4ff;
+  color: #2563eb;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric.danger .metric-icon {
+  background: #fff0f0;
+  color: #dc2626;
+}
+
+.metric strong {
+  display: block;
+  font-size: 22px;
+}
+
+.metric span {
+  color: #7c8798;
+  font-size: 12px;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #e3e8ef;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.panel-header h3 {
+  margin: 0;
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+  color: #818b9b;
+  font-size: 13px;
+}
+
+.live {
+  font-size: 12px;
+  color: #168746;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.live span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #edf0f4;
+  white-space: nowrap;
+}
+
+th {
+  font-size: 11px;
+  color: #7a8494;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  font-size: 13px;
+}
+
+.status {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.status.normal {
+  background: #eaf8ef;
+  color: #167a3d;
+}
+
+.status.atencao {
+  background: #fff8da;
+  color: #96710a;
+}
+
+.status.atraso {
+  background: #fff0df;
+  color: #c35c0b;
+}
+
+.status.critico {
+  background: #ffe8e8;
+  color: #bf2525;
+}
+
+.search {
+  margin: 20px;
+  width: calc(100% - 40px);
+  border: 1px solid #d8dee8;
+  padding: 13px;
+  border-radius: 8px;
+}
+
+.vehicle-cards {
+  padding: 0 20px 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.vehicle-card {
+  border: 1px solid #e2e7ee;
+  padding: 18px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vehicle-card h3 {
+  margin: 8px 0 5px;
+}
+
+.vehicle-card p {
+  margin: 4px 0;
+  color: #747f90;
+}
+
+.plate {
+  display: inline-block;
+  background: #f0f3f7;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.approved {
+  color: #168746;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.operation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.operation-card {
+  background: white;
+  border: 1px solid #e2e7ee;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.operation-card p {
+  color: #778193;
+}
+
+.operation-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.operation-top h3 {
+  margin: 8px 0;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #596477;
+}
+
+.timeline {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.timeline span {
+  background: #eef1f5;
+  padding: 5px 7px;
+  border-radius: 5px;
+  font-size: 9px;
+}
+
+.timeline span.current {
+  background: #2563eb;
+  color: white;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dock-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dock {
+  background: white;
+  border: 1px solid #e2e7ee;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 180px;
+}
+
+.dock.busy {
+  border-left: 4px solid #f59e0b;
+}
+
+.dock.free {
+  border-left: 4px solid #22c55e;
+}
+
+.dock-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 17px;
+}
+
+.dock h3 {
+  font-size: 22px;
+  margin: 15px 0 4px;
+}
+
+.dock p {
+  color: #7b8494;
+  margin: 5px 0;
+}
+
+.alerts {
+  display: grid;
+  gap: 12px;
+}
+
+.alert {
+  padding: 18px;
+  border-radius: 10px;
+  display: flex;
+  gap: 14px;
+  border: 1px solid;
+}
+
+.alert.atencao {
+  background: #fffbed;
+  border-color: #f5d76e;
+}
+
+.alert.atraso {
+  background: #fff4e8;
+  border-color: #f5aa58;
+}
+
+.alert.critico {
+  background: #fff0f0;
+  border-color: #ef7777;
+}
+
+.alert strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.alert p {
+  margin: 0 0 5px;
+}
+
+.alert small {
+  color: #727c8c;
+}
+
+.empty,
+.coming {
+  background: white;
+  border: 1px solid #e2e7ee;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty svg {
+  color: #22a45d;
+}
+
+.coming {
+  max-width: 700px;
+  margin: 30px auto;
+}
+
+.coming-icon {
+  width: 70px;
+  height: 70px;
+  background: #edf4ff;
+  color: #2563eb;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.coming p {
+  color: #727d8e;
+}
+
+.simulation-preview {
+  margin: 30px auto 0;
+  border: 1px dashed #aeb9c9;
+  padding: 30px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 12, 24, 0.65);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  width: min(760px, 100%);
+  border-radius: 14px;
+  padding: 24px;
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.modal-header p {
+  color: #788294;
+}
+
+.modal-header button {
+  border: none;
+  background: transparent;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.form-grid label {
+  font-size: 12px;
+  color: #5d6879;
+  font-weight: bold;
+}
+
+.form-grid input,
+.form-grid select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #d8dee7;
+  border-radius: 7px;
+  margin-top: 6px;
+  background: white;
+}
+
+.warning-box {
+  background: #fff7dd;
+  color: #805f08;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.overlay {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dock-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: 0.25s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 15;
+  }
+
+  .close-menu {
+    display: block;
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: white;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .mobile-menu {
+    display: flex;
+    border: none;
+    background: transparent;
+  }
+
+  .topbar {
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .demo-badge {
+    margin-left: auto;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .operation-grid,
+  .dock-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 520px) {
+  .content {
+    padding: 18px;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .demo-badge {
+    display: none;
+  }
+}
+
+.hidden{display:none!important}
+.nav-icon,.inline-icon{width:19px;text-align:center;display:inline-block}
+.sim-toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.sim-layout{position:relative;min-height:520px;background:#eef2f6;border:1px solid #d8dee7;border-radius:14px;overflow:hidden;margin-top:18px}
+.sim-road{position:absolute;left:4%;right:4%;top:46%;height:72px;background:#3f4650;border-radius:10px}
+.sim-road:after{content:"";position:absolute;left:0;right:0;top:34px;border-top:3px dashed #d9dde3}
+.sim-zone{position:absolute;background:white;border:2px solid #cbd5e1;border-radius:12px;padding:12px;text-align:center;font-size:12px;font-weight:bold;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+.zone-portaria{left:4%;top:12%;width:14%}.zone-balanca{left:22%;top:12%;width:14%}.zone-patio{left:40%;top:10%;width:18%;height:105px}
+.zone-docas{right:4%;top:8%;width:31%;height:145px}.zone-saida{right:4%;bottom:9%;width:14%}
+.sim-truck{position:absolute;z-index:5;width:78px;height:34px;background:#2563eb;color:white;border-radius:7px;padding:8px 5px;text-align:center;font-size:11px;font-weight:bold;transition:all 1s ease;box-shadow:0 5px 14px rgba(37,99,235,.3)}
+.sim-info{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
+.sim-stat{background:white;border:1px solid #e2e7ee;border-radius:10px;padding:14px;text-align:center}.sim-stat strong{display:block;font-size:20px}
+@media(max-width:800px){.sim-info{grid-template-columns:repeat(2,1fr)}.sim-layout{min-height:600px}.zone-docas{width:38%}}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div id="overlay" class="overlay hidden"></div>
+  <aside id="sidebar" class="sidebar">
+    <div class="brand"><div class="brand-icon">🚚</div><div><strong>SIGLV</strong><small>Controle Logístico</small></div><button id="closeMenu" class="close-menu">✕</button></div>
+    <nav id="nav">
+      <button class="active" data-screen="dashboard">▦ <span>Dashboard</span></button>
+      <button data-screen="agendamentos">▣ <span>Agendamentos</span></button>
+      <button data-screen="portaria">↪ <span>Portaria</span></button>
+      <button data-screen="operacao">🚚 <span>Operação</span></button>
+      <button data-screen="docas">▤ <span>Docas</span></button>
+      <button data-screen="alertas">🔔 <span>Alertas</span></button>
+      <button data-screen="simulacao">◉ <span>Simulação</span></button>
+    </nav>
+    <div class="sidebar-footer">⚙ Configurações</div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button id="mobileMenu" class="mobile-menu">☰</button><div><h1>SIGLV</h1><p>Sistema Integrado de Gestão e Liberação de Veículos</p></div><div class="demo-badge">🏭 Ambiente demonstrativo</div></header>
+    <section id="content" class="content"></section>
+  </main>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop hidden">
+<form id="scheduleForm" class="modal">
+ <div class="modal-header"><div><h2>Novo agendamento</h2><p>Cadastre a operação antes da chegada do veículo.</p></div><button type="button" id="closeModal">✕</button></div>
+ <div class="form-grid">
+  <label>Placa<input name="placa" required placeholder="ABC1D23"></label>
+  <label>Motorista<input name="motorista" required placeholder="Nome do motorista"></label>
+  <label>Transportadora<input name="transportadora" required placeholder="Transportadora"></label>
+  <label>Tipo de veículo<select name="veiculo"><option>VUC</option><option>Toco</option><option>Truck</option><option>Carreta</option><option>Bitrem</option><option>Rodotrem</option></select></label>
+  <label>Operação<select name="operacao"><option>Carga</option><option>Descarga</option></select></label>
+  <label>Tipo de carga<input name="carga" required placeholder="Matéria-prima"></label>
+  <label>Peso estimado (kg)<input name="peso" type="number" value="20000"></label>
+  <label>Quantidade<input name="quantidade" type="number" value="20"></label>
+  <label>Data<input name="data" type="date" required></label>
+  <label>Horário<input id="horario" name="horario" type="time" value="08:00" required></label>
+ </div>
+ <div id="scheduleWarning" class="warning-box hidden">⚠ Alta ocupação prevista. Considere selecionar outro horário.</div>
+ <div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button class="primary">Confirmar agendamento</button></div>
+</form>
+</div>
+
+<script>
+
+const DEMO=[
+{id:1,placa:"ABC1D23",motorista:"Carlos Silva",transportadora:"TransCaí",veiculo:"Carreta",carga:"Matéria-prima",peso:28000,quantidade:24,operacao:"Descarga",data:"2026-08-13",horario:"08:00",status:"OPERACAO",doca:3,entrada:"08:03",inicioEtapa:Date.now()-42*60000},
+{id:2,placa:"DEF4G56",motorista:"Marcos Souza",transportadora:"Vale Log",veiculo:"Truck",carga:"Carga paletizada",peso:16000,quantidade:18,operacao:"Carga",data:"2026-08-13",horario:"08:30",status:"PATIO",entrada:"08:31",inicioEtapa:Date.now()-12*60000},
+{id:3,placa:"GHI7J89",motorista:"Rafael Lima",transportadora:"Serra Transportes",veiculo:"Carreta",carga:"Produto acabado",peso:24000,quantidade:30,operacao:"Carga",data:"2026-08-13",horario:"09:00",status:"AGENDADO"}
+];
+let caminhoes; try{caminhoes=JSON.parse(localStorage.getItem("siglv-caminhoes"))||DEMO}catch(e){caminhoes=DEMO}
+let docas=Array.from({length:8},(_,i)=>({id:i+1,nome:`Doca ${String(i+1).padStart(2,"0")}`})); docas[2].caminhaoId=1;
+let tela="dashboard", simTimer=null, simIndex=0;
+const content=document.getElementById("content");
+const min=c=>c.inicioEtapa?Math.max(0,Math.floor((Date.now()-c.inicioEtapa)/60000)):0;
+const save=()=>localStorage.setItem("siglv-caminhoes",JSON.stringify(caminhoes));
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function nivel(c){let m=min(c);if(c.status==="OPERACAO"&&m>(c.operacao==="Carga"?30:35))return"critico";if((c.status==="PATIO"&&m>15)||(c.status==="PESAGEM"&&m>10))return"atraso";return"normal"}
+function tabela(){return `<div class="table-container"><table><thead><tr><th>Placa</th><th>Transportadora</th><th>Operação</th><th>Carga</th><th>Etapa</th><th>Doca</th><th>Horário</th><th>Status</th></tr></thead><tbody>${caminhoes.map(c=>`<tr><td><strong>${esc(c.placa)}</strong></td><td>${esc(c.transportadora)}</td><td>${esc(c.operacao)}</td><td>${esc(c.carga)}</td><td>${c.status}</td><td>${c.doca?`Doca ${c.doca}`:"—"}</td><td>${c.entrada||c.horario}</td><td><span class="status ${nivel(c)}">${nivel(c)}</span></td></tr>`).join("")}</tbody></table></div>`}
+function heading(t,p,btn=""){return `<div class="page-heading"><div><h2>${t}</h2><p>${p}</p></div>${btn}</div>`}
+function metrics(){let presentes=caminhoes.filter(c=>!["AGENDADO","FINALIZADO"].includes(c.status)).length, aguardando=caminhoes.filter(c=>["PATIO","PORTARIA"].includes(c.status)).length, op=caminhoes.filter(c=>["OPERACAO","DOCA"].includes(c.status)).length, atras=caminhoes.filter(c=>nivel(c)!=="normal").length, occ=docas.filter(d=>d.caminhaoId).length;return [["▣","Previstos",caminhoes.length],["🚚","Na fábrica",presentes],["Ⓟ","Aguardando",aguardando],["▤","Em operação",op],["⚠","Atrasados",atras],["▥","Docas ocupadas",occ+"/8"]]}
+function render(){
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.screen===tela));
+ if(tela==="dashboard"){content.innerHTML=heading("Central Operacional","Acompanhe toda a movimentação logística da unidade.",`<button class="primary" onclick="openModal()">＋ Novo agendamento</button>`)+`<div class="metrics">${metrics().map((m,i)=>`<div class="metric ${i===4&&m[2]>0?"danger":""}"><div class="metric-icon">${m[0]}</div><div><strong>${m[2]}</strong><span>${m[1]}</span></div></div>`).join("")}</div><div class="panel"><div class="panel-header"><div><h3>Operação em tempo real</h3><p>Situação atual dos veículos cadastrados.</p></div><span class="live"><span></span>AO VIVO</span></div>${tabela()}</div>`}
+ if(tela==="agendamentos")content.innerHTML=heading("Agendamentos","Planeje as chegadas antes de os caminhões entrarem na fábrica.",`<button class="primary" onclick="openModal()">＋ Agendar caminhão</button>`)+`<div class="panel">${tabela()}</div>`;
+ if(tela==="portaria"){content.innerHTML=heading("Portaria","Identificação e liberação de veículos.")+`<div class="panel"><input id="busca" class="search" placeholder="Digite a placa do caminhão..."><div id="cards" class="vehicle-cards"></div></div>`; renderPortaria();document.getElementById("busca").oninput=renderPortaria}
+ if(tela==="operacao")renderOperacao();
+ if(tela==="docas")renderDocas();
+ if(tela==="alertas")renderAlertas();
+ if(tela==="simulacao")renderSim();
+}
+function renderPortaria(){let q=(document.getElementById("busca")?.value||"").toLowerCase();document.getElementById("cards").innerHTML=caminhoes.filter(c=>c.placa.toLowerCase().includes(q)).map(c=>`<div class="vehicle-card"><div><span class="plate">${c.placa}</span><h3>${esc(c.transportadora)}</h3><p>${esc(c.motorista)} • ${esc(c.veiculo)}</p><p>${c.operacao} • ${esc(c.carga)}</p></div>${c.status==="AGENDADO"?`<button class="primary" onclick="liberar(${c.id})">✓ Liberar entrada</button>`:`<span class="approved">✓ Entrada registrada</span>`}</div>`).join("")}
+function liberar(id){let c=caminhoes.find(x=>x.id===id);c.status="PORTARIA";c.entrada=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});c.inicioEtapa=Date.now();save();render()}
+const fluxo=["AGENDADO","PORTARIA","PESAGEM","PATIO","DOCA","OPERACAO","CONFERENCIA","LIBERADO","FINALIZADO"];
+function proxima(id){let c=caminhoes.find(x=>x.id===id),i=fluxo.indexOf(c.status);if(i<fluxo.length-1){c.status=fluxo[i+1];c.inicioEtapa=Date.now();save();render()}}
+function paraDoca(id){let d=docas.find(x=>!x.caminhaoId);if(!d)return alert("Nenhuma doca disponível.");let c=caminhoes.find(x=>x.id===id);d.caminhaoId=id;c.doca=d.id;c.status="DOCA";c.inicioEtapa=Date.now();save();render()}
+function liberaDoca(id){docas.forEach(d=>{if(d.caminhaoId===id)delete d.caminhaoId});let c=caminhoes.find(x=>x.id===id);delete c.doca;c.status="CONFERENCIA";c.inicioEtapa=Date.now();save();render()}
+function renderOperacao(){let cards=caminhoes.filter(c=>c.status!=="AGENDADO").map(c=>{let action=c.status==="PATIO"?`<button class="primary" onclick="paraDoca(${c.id})">Enviar para doca</button>`:c.status==="DOCA"?`<button class="primary" onclick="proxima(${c.id})">Iniciar operação</button>`:c.status==="OPERACAO"?`<button class="primary" onclick="liberaDoca(${c.id})">Finalizar operação</button>`:c.status!=="FINALIZADO"?`<button class="primary" onclick="proxima(${c.id})">Concluir etapa</button>`:"";return `<div class="operation-card"><div class="operation-top"><div><span class="plate">${c.placa}</span><h3>${c.status}</h3></div><div class="timer">◷ ${min(c)} min</div></div><p>${esc(c.transportadora)} • ${c.operacao}</p><p>${esc(c.carga)}</p>${c.doca?`<strong>Doca ${c.doca}</strong>`:""}<div class="timeline">${fluxo.slice(1).map(e=>`<span class="${e===c.status?"current":""}">${e}</span>`).join("")}</div><div class="card-actions">${action}</div></div>`}).join("");content.innerHTML=heading("Operação","Coordenação do caminhão desde a entrada até a saída.")+`<div class="operation-grid">${cards}</div>`}
+function renderDocas(){content.innerHTML=heading("Gestão de Docas","Visualize rapidamente a capacidade de carregamento e descarga.")+`<div class="dock-grid">${docas.map(d=>{let c=caminhoes.find(v=>v.id===d.caminhaoId);return `<div class="dock ${c?"busy":"free"}"><div class="dock-header">▥ <strong>${d.nome}</strong></div>${c?`<span class="status atraso">Ocupada</span><h3>${c.placa}</h3><p>${c.operacao}</p><p>${esc(c.carga)}</p><div class="timer">◷ ${min(c)} min</div>`:`<span class="status normal">Livre</span><p>Aguardando próximo veículo.</p>`}</div>`}).join("")}</div>`}
+function alertas(){return caminhoes.map(c=>{let m=min(c);if(c.status==="PATIO"&&m>=12)return{c,n:m>15?"atraso":"atencao",msg:m>15?`Veículo aguardando doca há ${m} minutos.`:"Veículo próximo do limite de espera no pátio."};if(c.status==="OPERACAO"&&m>=(c.operacao==="Carga"?25:30)){let l=c.operacao==="Carga"?30:35;return{c,n:m>l?"critico":"atencao",msg:m>l?`${c.operacao} excedeu o tempo previsto em ${m-l} minutos.`:`${c.operacao} próxima do tempo limite.`}}}).filter(Boolean)}
+function renderAlertas(){let a=alertas();content.innerHTML=heading("Central de Alertas","Identificação preventiva de atrasos e gargalos.")+(a.length?`<div class="alerts">${a.map(x=>`<div class="alert ${x.n}">⚠<div><strong>${x.n==="critico"?"Gargalo crítico":x.n==="atraso"?"Atraso identificado":"Atenção operacional"}</strong><p>${x.msg}</p><small>${x.c.placa} • ${esc(x.c.transportadora)} • ${x.c.status}</small></div></div>`).join("")}</div>`:`<div class="empty"><div style="font-size:40px">✓</div><h3>Operação dentro dos limites</h3><p>Nenhum alerta operacional no momento.</p></div>`)}
+const positions=[["8%","48%"],["24%","48%"],["43%","48%"],["63%","48%"],["78%","31%"],["84%","48%"],["84%","72%"]];
+function renderSim(){content.innerHTML=heading("Simulação 3D/Visual do Espaço Físico","Protótipo visual do fluxo interno da fábrica e movimentação dos veículos.")+`<div class="panel" style="padding:20px"><div class="sim-toolbar"><button class="primary" onclick="startSim()">▶ Simular um dia</button><button class="secondary" onclick="resetSim()">↻ Reiniciar</button></div><div class="sim-info"><div class="sim-stat"><strong>8</strong>Docas</div><div class="sim-stat"><strong>${caminhoes.length}</strong>Veículos</div><div class="sim-stat"><strong>${docas.filter(d=>d.caminhaoId).length}</strong>Docas ocupadas</div><div class="sim-stat"><strong>${alertas().length}</strong>Alertas</div></div><div class="sim-layout"><div class="sim-zone zone-portaria">PORTARIA</div><div class="sim-zone zone-balanca">BALANÇA</div><div class="sim-zone zone-patio">PÁTIO DE ESPERA</div><div class="sim-zone zone-docas">ÁREA DE DOCAS<br>01 · 02 · 03 · 04 · 05 · 06 · 07 · 08</div><div class="sim-zone zone-saida">SAÍDA</div><div class="sim-road"></div><div id="simTruck" class="sim-truck" style="left:8%;top:48%">🚚 ABC1D23</div></div><p style="color:#727d8e;text-align:center">A visualização representa o espaço físico e permite acompanhar o caminhão passando por Portaria → Balança → Pátio → Doca → Operação → Saída.</p></div>`}
+function moveSim(){let t=document.getElementById("simTruck");if(!t)return;let p=positions[simIndex];t.style.left=p[0];t.style.top=p[1];simIndex++;if(simIndex>=positions.length){clearInterval(simTimer);simTimer=null;simIndex=0}}
+function startSim(){if(simTimer)return;moveSim();simTimer=setInterval(moveSim,1300)}
+function resetSim(){if(simTimer)clearInterval(simTimer);simTimer=null;simIndex=0;renderSim()}
+function openModal(){document.getElementById("modalBackdrop").classList.remove("hidden")}
+function closeModal(){document.getElementById("modalBackdrop").classList.add("hidden")}
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>{tela=b.dataset.screen;document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.add("hidden");render()});
+document.getElementById("mobileMenu").onclick=()=>{document.getElementById("sidebar").classList.add("open");document.getElementById("overlay").classList.remove("hidden")};
+document.getElementById("closeMenu").onclick=document.getElementById("overlay").onclick=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.add("hidden")};
+document.getElementById("closeModal").onclick=document.getElementById("cancelModal").onclick=closeModal;
+document.getElementById("horario").oninput=e=>document.getElementById("scheduleWarning").classList.toggle("hidden",caminhoes.filter(c=>c.horario===e.target.value).length<3);
+document.getElementById("scheduleForm").onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);caminhoes.push({id:Date.now(),placa:String(f.get("placa")).toUpperCase(),motorista:String(f.get("motorista")),transportadora:String(f.get("transportadora")),veiculo:String(f.get("veiculo")),carga:String(f.get("carga")),peso:Number(f.get("peso")),quantidade:Number(f.get("quantidade")),operacao:String(f.get("operacao")),data:String(f.get("data")),horario:String(f.get("horario")),status:"AGENDADO"});save();e.target.reset();closeModal();render()};
+setInterval(()=>{if(["dashboard","operacao","docas","alertas"].includes(tela))render()},30000);
+render();
+
+</script>
+</body>
+</html>
