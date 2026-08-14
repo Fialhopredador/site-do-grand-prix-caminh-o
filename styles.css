@@ -1876,3 +1876,7 @@ textarea.input:focus {
     max-width: none;
   }
 }
+/* Corrige modal antigo que não deve aparecer ao iniciar */
+#modalBackdrop {
+  display: none !important;
+}
