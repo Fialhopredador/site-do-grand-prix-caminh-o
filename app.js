@@ -661,26 +661,29 @@ const PAGE_META = {
 function navTo(page) {
   currentPage = page;
 
-  $$('#nav button[data-page]')
-    .forEach(
-      (button) => {
-        button.classList.toggle(
-          'active',
-          button.dataset.page === page
-        );
-      }
+  $$('#nav button[data-page]').forEach((button) => {
+    button.classList.toggle(
+      'active',
+      button.dataset.page === page
     );
+  });
 
-  $('#pageTitle')
-    .textContent =
-      PAGE_META[page][0];
+  const pageTitle = $('#pageTitle');
+  const pageSubtitle = $('#pageSubtitle');
 
-  $('#pageSubtitle')
-    .textContent =
-      PAGE_META[page][1];
+  if (pageTitle) {
+    pageTitle.textContent = PAGE_META[page][0];
+  }
 
-  $('#sidebar')
-    .classList.remove('open');
+  if (pageSubtitle) {
+    pageSubtitle.textContent = PAGE_META[page][1];
+  }
+
+  const sidebar = $('#sidebar');
+
+  if (sidebar) {
+    sidebar.classList.remove('open');
+  }
 
   render();
 }
